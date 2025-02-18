@@ -1,0 +1,166 @@
+# Security Monitoring System
+
+## Task
+
+Design and implement a real-time compliance monitoring dashboard for healthcare communications. The system will process and analyze messages exchanged between healthcare professionals within a single communication platform to identify potential compliance violations. The solution must prioritize scalability, performance, and usability, leveraging NextJS/TypeScript and modern frontend technologies.
+
+## Requirements
+
+1. Your task is to design and implement a compliance monitoring dashboard using Next.JS/ Typescipt. The system should:
+
+- Architect the frontend for high performance and responsiveness.
+- Use efficient state management and lazy loading where applicable.
+- Design and implement a clean, intuitive UI for compliance monitoring.
+- Display incoming messages in real time.
+- Highlight flagged messages with appropriate visual indicators.
+- Implement a search and filter feature for navigating messages.
+- Simulate fetching data from an API (use mock data or JSON server).
+- Ensure proper error handling and loading states.
+- Use WebSockets or polling to simulate real-time updates.
+
+2.  **Security Violations**: Analyze incoming messages for potential compliance violations, including:
+	- PHI (Protected Health Information) exposure (required).
+	- HIPAA violations (required).
+	- Unauthorized patient data sharing (optional).
+	- Malpractice or unethical recommendations (bonus).
+	- Suspicious billing discussions (bonus).
+   
+Do this but use Tanstack Router.
+
+---
+
+use code-based routing instead
+
+---
+
+For the code present, we get this error:
+```
+Could not find name 'violationsStore'. Did you mean 'violations'?
+```
+How can I resolve this? If you propose a fix, please make it concise.
+
+---
+
+TypeError: updater is not a function
+
+---
+
+create a bunch of messages that model these violations:
+
+	- PHI (Protected Health Information) exposure (required).
+	- HIPAA violations (required).
+	- Unauthorized patient data sharing (optional).
+	- Malpractice or unethical recommendations (bonus).
+	- Suspicious billing discussions (bonus).
+
+in JSONL format and load them on intervals like you currently do
+
+---
+
+add some messages that do not contain violations
+
+---
+
+can you include a UI affordance to filter by severity?
+
+---
+
+allow setting the update frequency in Settings.jsx
+
+---
+
+make 5 seconds the max. I want faster updates.
+
+---
+
+please include the @Messages.jsx component. I also want above the component visually a count of total messages received as well as counts for each type of violation.
+
+---
+
+oh but I mean how can I include that messages component in my parent Dashboard.jsx file?
+
+---
+
+but put the message and violation statistics components directly in this Dashboard component (as siblings to Messages)
+
+---
+
+also show a count of total messages received
+
+---
+
+include some messages containing violations that would be really hard to classify using the keyword-based system. But that you or another LLM could correctly classify.
+
+---
+
+please hook this up to ollama for LLM-based classification.
+
+---
+
+there may not be a "response" field.
+
+---
+
+no I get {error: "model mistral not found"}
+
+---
+
+no, add proper error handling
+
+---
+
+improve this error handling. right now it uses localhost, but the actual service may not be available in production. Don't make the assumption that the response is valid json. Or that it has a "response" field.
+
+---
+
+use ollama structured outputs instead:
+
+JavaScript
+Using the Ollama JavaScript library, pass in the schema as a JSON object to the format parameter as either object or use Zod (recommended) to serialize the schema using zodToJsonSchema().
+
+import ollama from 'ollama';
+import { z } from 'zod';
+import { zodToJsonSchema } from 'zod-to-json-schema';
+
+const Country = z.object({
+    name: z.string(),
+    capital: z.string(), 
+    languages: z.array(z.string()),
+});
+
+const response = await ollama.chat({
+    model: 'llama3.1',
+    messages: [{ role: 'user', content: 'Tell me about Canada.' }],
+    format: zodToJsonSchema(Country),
+});
+
+const country = Country.parse(JSON.parse(response.message.content));
+console.log(country);
+
+---
+
+now highlight messages that were not classified as violations via the keyword/regex system, but *were* via the LLM.
+
+---
+
+now add a queue. Only one request should be sent to the ollama service at a time, even if messages (with potential violations) are coming in quickly. Introduce a loading state to the message and resolve it (with a violation indicator if there is a violation) once the message loads.
+
+---
+
+can you divorce the lifecycle of the incoming messages from that of the request queue? messages may come in very fast
+
+---
+
+display in the dashboard @Dashboard.jsx the total count of messages deemed violations by the LLM
+
+---
+
+as we see, a message can contain multiple violations. Simplify the dropdown filter logic to only display violations at that level.
+
+---
+
+make the UI pretty. Use tailwindcss for styling.
+
+---
+
+make the stats cards horizontal
