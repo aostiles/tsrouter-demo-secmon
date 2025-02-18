@@ -1,4 +1,4 @@
-# Security Monitoring App (Create TS Router Demo)
+# TS Router Demo (Security Monitoring App)
 
 This app uses ollama to monitor incoming messages for PHI and other HIPAA violations.  
 It was a fun project to try out https://github.com/TanStack/create-tsrouter-app.
